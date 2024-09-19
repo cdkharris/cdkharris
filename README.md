@@ -1,6 +1,6 @@
 ## cdkharris
 
-[Wikiblog](./wiki)
+[Wikiblog](../../wiki)
 
 <!--
 **cdkharris/cdkharris** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
