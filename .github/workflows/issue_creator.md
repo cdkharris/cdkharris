@@ -1,0 +1,62 @@
+name: Weekly Xurrent Rota
+on: workflow_dispatch
+
+jobs:
+  create_issue:
+    name: Create xurrent rota issue
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "echo 'date=$(date +'%d-%m-%Y')' >> $GITHUB_OUTPUT"
+      - name: Create xurrent rota issue
+        run: |
+          if [[ $CLOSE_PREVIOUS == true ]]; then
+            previous_issue_number=$(gh issue list \
+              --label "$LABELS" \
+              --json number \
+              --jq '.[0].number')
+            if [[ -n $previous_issue_number ]]; then
+              gh issue close "$previous_issue_number"
+              gh issue unpin "$previous_issue_number"
+            fi
+          fi
+          new_issue_url=$(gh issue create \
+            --title "$TITLE" \
+            --assignee "$ASSIGNEES" \
+            --label "$LABELS" \
+            --body "$BODY")
+          if [[ $PINNED == true ]]; then
+            gh issue pin "$new_issue_url"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TITLE: Xurrent rota ${{ steps.date.outputs.date }}
+          ASSIGNEES: cdkharris
+          LABELS: xurrent rota
+          BODY: |
+            This issue tracks the Environments Xurrent rota for T2 25/26.
+            This rota organises the responsibility for requests assigned to the Environments team.
+            - Solve them when you can
+            - If not, bring them up in Slack or Stand-up to
+              - find a solution, or
+              - assign them to someone else, or
+              - determine whether they need to be assigned to a different team
+            Schedule for T2 25/26: (modify assignees each week by hand)
+            Jan 19-23 Camilla
+            Jan 26-30 Sam
+            Feb 2-6 Steve
+            Feb 9-13 Camilla
+            Feb 16-20 Sam
+            Feb 23-27 Steve
+            March 2-6 Camilla
+            March 9-13 Sam
+            March 16-20 Steve
+            March 23-27 Camilla
+            March 30 - April 3 Sam
+          PINNED: false
+          CLOSE_PREVIOUS: true
