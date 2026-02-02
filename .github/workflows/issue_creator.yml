@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "echo 'TODAY_DATE=$(date +'%d-%m-%Y')' >> $GITHUB_ENV"
+        run: echo "TODAY_DATE=$(date +'%d-%m-%Y')" >> "$GITHUB_OUTPUT"
       - name: Create xurrent rota issue
         run: |
           if [[ $CLOSE_PREVIOUS == true ]]; then
@@ -35,7 +35,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          TITLE: Xurrent rota T2 ${{ env.TODAY_DATE }}
+          TITLE: Xurrent rota T2 ${{ steps.date.outputs.TODAY_DATE }}
           ASSIGNEES: cdkharris
           LABELS: xurrent rota
           BODY: |
